@@ -42,7 +42,7 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		Group root = new Group();
 		canvas = new Canvas(800, 400);
 		root.getChildren().add(canvas);
-		Scene scene = new Scene(root);
+		Scene scene = new Scene(root, Color.BLACK);
 		stage.setScene(scene);
 
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, this);
@@ -72,7 +72,13 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	public class AnimateObjects extends AnimationTimer{
 		public void handle(long now){
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-			gc.drawImage(spaceship, 300+x, 100);
+
+			ImageView ss = new ImageView(spaceship);
+			ss.setRotate(x);
+			SnapshotParameters params = new SnapshotParameters();
+			params.setFill(Color.TRANSPARENT);
+			Image rotatedImage = ss.snapshot(params, null);
+			gc.drawImage(rotatedImage, 300, 100);
 		}
 	}
 }
