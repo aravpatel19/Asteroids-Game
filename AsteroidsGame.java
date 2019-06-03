@@ -22,6 +22,9 @@ import javafx.scene.layout.StackPane;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import java.util.*;
+import javafx.scene.shape.*;
+import javafx.animation.*;
+import javafx.util.Duration;
 
 public class AsteroidsGame extends Application implements EventHandler<InputEvent>{
 	GraphicsContext gc;
@@ -30,6 +33,9 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	AnimateObjects animate;
 	Image spaceship;
 	Canvas canvas;
+	ImageView ss;
+	StackPane pane;
+	Scene scene;
 
 	public static void main(String[] args){
 
@@ -42,15 +48,23 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		Group root = new Group();
 		canvas = new Canvas(800, 400);
 		root.getChildren().add(canvas);
-		Scene scene = new Scene(root, Color.BLACK);
+
+		gc = canvas.getGraphicsContext2D();
+		spaceship = new Image("Spaceship.JPG");
+		ss = new ImageView(spaceship);
+
+		pane = new StackPane();
+		scene = new Scene(pane, 900, 900, Color.BLACK);
+
+		ss.setFitWidth(50);
+		pane.getChildren().add(ss);
+
 		stage.setScene(scene);
 
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, this);
 		scene.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 
-		gc = canvas.getGraphicsContext2D();
-		spaceship = new Image("Spaceship.JPG");
-		ImageView ss = new ImageView(spaceship);
+
 
 		animate = new AnimateObjects();
 		animate.start();
@@ -61,6 +75,9 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		if(event instanceof KeyEvent){
 			if(((KeyEvent)event).getCode() == KeyCode.LEFT)
 				x--;
+			if(((KeyEvent)event).getCode() == KeyCode.RIGHT)
+				x++;
+
 		}
 		if(event instanceof MouseEvent){
 			System.out.println(((MouseEvent)event).getX());
@@ -73,12 +90,8 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		public void handle(long now){
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-			ImageView ss = new ImageView(spaceship);
 			ss.setRotate(x);
-			SnapshotParameters params = new SnapshotParameters();
-			params.setFill(Color.TRANSPARENT);
-			Image rotatedImage = ss.snapshot(params, null);
-			gc.drawImage(rotatedImage, 300, 100);
+			ss.setPreserveRatio(true);
 		}
 	}
 }
