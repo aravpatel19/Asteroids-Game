@@ -32,8 +32,10 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	int x = 0;
 	AnimateObjects animate;
 	Image spaceship;
+	Image asteroid;
 	Canvas canvas;
 	ImageView ss;
+	ImageView a;
 	StackPane pane;
 	Scene scene;
 
@@ -46,25 +48,27 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 
 		stage.setTitle("Asteroids");
 		Group root = new Group();
+		//StackPane root = new StackPane();
 		canvas = new Canvas(800, 400);
 		root.getChildren().add(canvas);
 
 		gc = canvas.getGraphicsContext2D();
 		spaceship = new Image("Spaceship.JPG");
+		asteroid  = new Image("Asteroid.JPG");
+		a = new ImageView(asteroid);
 		ss = new ImageView(spaceship);
 
-		pane = new StackPane();
-		scene = new Scene(pane, 900, 900, Color.BLACK);
+		//pane = new StackPane();
+		scene = new Scene(root, Color.BLACK);
 
-		ss.setFitWidth(50);
-		pane.getChildren().add(ss);
+		//ss.setFitWidth(50);
+		//root.getChildren().add(ss);
+		//pane.getChildren().add(a);*/
 
 		stage.setScene(scene);
 
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, this);
 		scene.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-
-
 
 		animate = new AnimateObjects();
 		animate.start();
@@ -90,8 +94,10 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		public void handle(long now){
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-			ss.setRotate(x);
-			ss.setPreserveRatio(true);
+			gc.rotate(x);
+			gc.drawImage(spaceship, 180, 200);
+			gc.drawImage(asteroid, 30, 30);
+
 		}
 	}
 }
