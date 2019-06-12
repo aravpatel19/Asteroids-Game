@@ -18,7 +18,7 @@ import javafx.scene.input.*;
 import javafx.scene.text.*;
 import javafx.scene.SnapshotParameters;
 import javafx.geometry.Insets;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import java.util.*;
@@ -30,12 +30,15 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	GraphicsContext gc;
 	Image trooper;
 	int x = 0;
+	int y=0;
 	AnimateObjects animate;
-	Image spaceship;
-	Image asteroid;
+	Spaceship spaceship;
+	ArrayList<Asteroids> asteroids;
+	Image ship;
+	Image ast;
+	Image background;
 	Canvas canvas;
 	ImageView ss;
-	ImageView a;
 	StackPane pane;
 	Scene scene;
 
@@ -47,23 +50,24 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	public void start(Stage stage){
 
 		stage.setTitle("Asteroids");
-		Group root = new Group();
-		//StackPane root = new StackPane();
+		//Group root = new Group();
+		Pane root = new Pane();
 		canvas = new Canvas(800, 400);
 		root.getChildren().add(canvas);
 
 		gc = canvas.getGraphicsContext2D();
-		spaceship = new Image("Spaceship.JPG");
-		asteroid  = new Image("Asteroid.JPG");
-		a = new ImageView(asteroid);
-		ss = new ImageView(spaceship);
+		ship = new Image("Spaceship.JPG");
+		ast  = new Image("Asteroid.JPG");
+		background = new Image("background.jpg");
 
+		spaceship = new Spaceship(300, 200, new ImageView(ship));
+		asteroids = new ArrayList<Asteroids>();
 		//pane = new StackPane();
 		scene = new Scene(root, Color.BLACK);
 
 		//ss.setFitWidth(50);
-		//root.getChildren().add(ss);
-		//pane.getChildren().add(a);*/
+		root.getChildren().add(spaceship.getShip());
+		//root.getChildren().add(a);
 
 		stage.setScene(scene);
 
@@ -81,6 +85,8 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 				x--;
 			if(((KeyEvent)event).getCode() == KeyCode.RIGHT)
 				x++;
+			if(((KeyEvent)event).getCode() == KeyCode.UP)
+				y++;
 
 		}
 		if(event instanceof MouseEvent){
@@ -93,10 +99,14 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	public class AnimateObjects extends AnimationTimer{
 		public void handle(long now){
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			gc.drawImage(background, 0, 0);
+			spaceship.getShip().setRotate(x);
+			spaceship.getShip().setX(300);
+			spaceship.getShip().setY(200 - y);
+			Rectangle2D rectShip = new Rectangle2D(spaceship.getX(), spaceship.getY(), ship.getWidth(), ship.getHeight());
 
-			gc.rotate(x);
-			gc.drawImage(spaceship, 180, 200);
-			gc.drawImage(asteroid, 30, 30);
+			//gc.drawImage(ship, 180, 200);
+			Rectangle2D rectAsteroid = new Rectangle2D(30, 30, ast.getWidth(), ast.getHeight());
 
 		}
 	}
