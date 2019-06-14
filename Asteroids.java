@@ -32,4 +32,8 @@ public class Asteroids extends Player{
 		super(x, y);
 		this.asteroid = asteroid;
 	}
+
+	public Image getAsteroid(){
+		return asteroid;
+	}
 }
