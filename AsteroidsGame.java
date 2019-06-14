@@ -105,14 +105,13 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 
 				spaceship.setRotVel(0);
 			}
-			if(event.getEventType().toString().equals("KEY_RELEASED") &&
-				(((KeyEvent)event).getCode() == KeyCode.W ||
-				((KeyEvent)event).getCode() == KeyCode.A ||
-				((KeyEvent)event).getCode() == KeyCode.D ||
-				((KeyEvent)event).getCode() == KeyCode.S)){
+			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.W || ((KeyEvent)event).getCode() == KeyCode.S)){
+				spaceship.setPosVelY(0);
+			}
+
+			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.A || ((KeyEvent)event).getCode() == KeyCode.D)){
 
 				spaceship.setPosVelX(0);
-				spaceship.setPosVelY(0);
 			}
 
 		}
@@ -134,7 +133,7 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 			spaceship.update();
 			spaceship.updateRotate();
 			Rectangle2D rectAsteroid = new Rectangle2D(30, 30, ast.getWidth(), ast.getHeight());
-			System.out.println(spaceship.getPosVelY());
+			System.out.println(spaceship.getRotAng());
 		}
 	}
 }
