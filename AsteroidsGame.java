@@ -73,6 +73,7 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, this);
 		scene.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		scene.addEventHandler(KeyEvent.KEY_RELEASED, this);
 
 		animate = new AnimateObjects();
 		animate.start();
@@ -80,13 +81,39 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		stage.show();
 	}
 	public void handle(final InputEvent event){
+
 		if(event instanceof KeyEvent){
+
 			if(((KeyEvent)event).getCode() == KeyCode.LEFT)
-				x--;
+				spaceship.setRotVel(-3.0);
 			if(((KeyEvent)event).getCode() == KeyCode.RIGHT)
-				x++;
-			if(((KeyEvent)event).getCode() == KeyCode.UP)
-				y++;
+				spaceship.setRotVel(3.0);
+			if(((KeyEvent)event).getCode() == KeyCode.W){
+				spaceship.setPosVelY(-3.0);
+			}
+			if(((KeyEvent)event).getCode() == KeyCode.S){
+				spaceship.setPosVelY(3.0);
+			}
+			if(((KeyEvent)event).getCode() == KeyCode.A){
+				spaceship.setPosVelX(-3.0);
+			}
+			if(((KeyEvent)event).getCode() == KeyCode.D){
+				spaceship.setPosVelX(3.0);
+
+			}
+			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.LEFT || ((KeyEvent)event).getCode() == KeyCode.RIGHT)){
+
+				spaceship.setRotVel(0);
+			}
+			if(event.getEventType().toString().equals("KEY_RELEASED") &&
+				(((KeyEvent)event).getCode() == KeyCode.W ||
+				((KeyEvent)event).getCode() == KeyCode.A ||
+				((KeyEvent)event).getCode() == KeyCode.D ||
+				((KeyEvent)event).getCode() == KeyCode.S)){
+
+				spaceship.setPosVelX(0);
+				spaceship.setPosVelY(0);
+			}
 
 		}
 		if(event instanceof MouseEvent){
@@ -100,14 +127,14 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		public void handle(long now){
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 			gc.drawImage(background, 0, 0);
-			spaceship.getShip().setRotate(x);
-			spaceship.getShip().setX(300);
-			spaceship.getShip().setY(200 - y);
-			Rectangle2D rectShip = new Rectangle2D(spaceship.getX(), spaceship.getY(), ship.getWidth(), ship.getHeight());
-
-			//gc.drawImage(ship, 180, 200);
+			spaceship.getShip().setRotate(spaceship.getRotAng());
+			spaceship.getShip().setX(spaceship.getPosX());
+			spaceship.getShip().setY(spaceship.getPosY());
+			Rectangle2D rectShip = new Rectangle2D(spaceship.getPosX(), spaceship.getPosY(), ship.getWidth(), ship.getHeight());
+			spaceship.update();
+			spaceship.updateRotate();
 			Rectangle2D rectAsteroid = new Rectangle2D(30, 30, ast.getWidth(), ast.getHeight());
-
+			System.out.println(spaceship.getPosVelY());
 		}
 	}
 }

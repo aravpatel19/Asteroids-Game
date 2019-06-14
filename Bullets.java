@@ -26,41 +26,15 @@ import javafx.scene.shape.*;
 import javafx.animation.*;
 import javafx.util.Duration;
 
-public class Spaceship extends Player{
+public class Bullets extends Player{
 
-	ImageView spaceship;
+	private Image bullet;
 
-	private double rotAng;
-	private double rotVel;
-
-	public Spaceship(double x, double y, ImageView spaceship){
+	public Bullets(double x, double y, Image bullet){
 		super(x, y);
-		this.spaceship = spaceship;
-		rotAng = 0;
-		rotVel =0;
+		this.bullet = bullet;
 	}
-	public ImageView getShip(){
-		return spaceship;
-	}
-
-	public double getRotAng(){
-		return rotAng;
-	}
-
-	public double getVelRot(){
-		return rotVel;
-	}
-
-	public void setRotVel(double rotVel){
-		this.rotVel = rotVel;
-	}
-
-	public void setRotAng(double rotAng){
-		this.rotAng = rotAng;
-	}
-
-	public void updateRotate(){
-		rotAng += rotVel;
+	public Image getBullet(){
+		return bullet;
 	}
 }
-
