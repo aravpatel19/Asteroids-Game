@@ -33,11 +33,11 @@ public class Spaceship extends Player{
 	private double rotAng;
 	private double rotVel;
 
-	public Spaceship(double x, double y, ImageView spaceship){
+	public Spaceship(double x, double y, Image spaceship){
 		super(x, y);
-		this.spaceship = spaceship;
-		rotAng = 0;
-		rotVel =0;
+		this.spaceship = new ImageView(spaceship);
+		this.rotAng = 0;
+		this.rotVel =0;
 	}
 	public ImageView getShip(){
 		return spaceship;

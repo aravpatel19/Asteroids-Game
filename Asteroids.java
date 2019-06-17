@@ -27,13 +27,13 @@ import javafx.animation.*;
 import javafx.util.Duration;
 public class Asteroids extends Player{
 
-	Image asteroid;
+	ImageView asteroid;
 	public Asteroids(double x, double y, Image asteroid){
 		super(x, y);
-		this.asteroid = asteroid;
+		this.asteroid = new ImageView(asteroid);
 	}
 
-	public Image getAsteroid(){
+	public ImageView getAsteroid(){
 		return asteroid;
 	}
 }

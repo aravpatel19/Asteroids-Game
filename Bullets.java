@@ -28,13 +28,13 @@ import javafx.util.Duration;
 
 public class Bullets extends Player{
 
-	private Image bullet;
+	private ImageView bullet;
 
 	public Bullets(double x, double y, Image bullet){
 		super(x, y);
-		this.bullet = bullet;
+		this.bullet = new ImageView(bullet);
 	}
-	public Image getBullet(){
+	public ImageView getBullet(){
 		return bullet;
 	}
 }
