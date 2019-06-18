@@ -47,6 +47,9 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	Canvas canvas;
 	ImageView ss;
 	Rectangle2D rectShip;
+	AudioClip destroy;
+	AudioClip shoot;
+	AudioClip point;
 	StackPane pane;
 	Scene scene;
 	Pane root;
@@ -75,6 +78,14 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		ast  = new Image("Asteroid.JPG");
 		bul = new Image("Bullets.JPG");
 		background = new Image("background.jpg");
+		URL resource = getClass().getResource("Destroy.MP3");
+		destroy = new AudioClip(resource.toString());
+
+		URL resource1 = getClass().getResource("Shoot.MP3");
+		shoot = new AudioClip(resource1.toString());
+
+		URL resource2 = getClass().getResource("Point.MP3");
+		point = new AudioClip(resource2.toString());
 
 		spaceship = new Spaceship(300, 200, ship);
 		bullets = new ArrayList<Bullets>();
@@ -130,6 +141,7 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 			}
 			if(((KeyEvent)event).getCode() == KeyCode.SPACE){
 				shootBullet();
+				shoot.play();
 			}
 
 			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.LEFT || ((KeyEvent)event).getCode() == KeyCode.RIGHT)){
@@ -241,6 +253,8 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 							root.getChildren().remove(bullets.get(i).getBullet());
 							bullets.remove(i);
 							score+=10;
+							point.play();
+
 
 						}
 					}
@@ -251,10 +265,16 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 						spaceship.setPosX(300);
 						spaceship.setPosY(200);
 						lives--;
-
+						destroy.play();
 						root.getChildren().remove(asteroids.get(i).getAsteroid());
 						asteroids.remove(i);
 					}
+				}
+				if((spaceship.getPosX() < -20 || spaceship.getPosX() > 810) || (spaceship.getPosY() < -10 || spaceship.getPosY() > 410)){
+					spaceship.setPosX(300);
+					spaceship.setPosY(200);
+					lives--;
+					destroy.play();
 				}
 
 				if(lives == 0){
@@ -273,16 +293,16 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 				gc.setFill( Color.RED);
 				gc.setStroke( Color.RED );
 				gc.setLineWidth(3);
-				Font font = Font.font( "Arial", FontWeight.NORMAL, 48 );
+				Font font = Font.font( "Courier New", FontWeight.NORMAL, 48 );
 				gc.setFont( font );
-				gc.fillText( "Game Over", 300, 50 );
-				gc.strokeText( "Game Over", 300, 50 );
+				gc.fillText( "Game Over", 280, 100 );
+
 
 				gc.setFill(Color.YELLOW);
-				gc.fillText("Score: "+score, 320, 150);
+				gc.fillText("Score: "+score, 280, 250);
 
 				gc.setFill(Color.RED);
-				gc.fillText("Press 'R' to restart", 225, 225);
+				gc.fillText("Press 'R' to restart", 125, 325);
 				if(R){
 					lives = 3;
 					score = 0;
