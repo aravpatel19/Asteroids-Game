@@ -25,7 +25,7 @@ public class Player{
 		return posY;
 	}
 
-	public void setY(double y){
+	public void setPosY(double y){
 		this.posY = y;
 	}
 

@@ -33,16 +33,27 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	int y=0;
 	AnimateObjects animate;
 	Spaceship spaceship;
+
 	ArrayList<Asteroids> asteroids;
+	ArrayList<Rectangle2D> rectAst;
+
+	ArrayList<Bullets> bullets;
+	ArrayList<Rectangle2D> rectBul;
+
 	Image ship;
 	Image ast;
+	Image bul;
 	Image background;
 	Canvas canvas;
 	ImageView ss;
-	ArrayList<Rectangle2D> rectAst;
+	Rectangle2D rectShip;
 	StackPane pane;
 	Scene scene;
 	Pane root;
+	boolean play;
+	int lives;
+	int score;
+	boolean R = false;
 
 	public static void main(String[] args){
 
@@ -56,18 +67,22 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		root = new Pane();
 		canvas = new Canvas(800, 400);
 		root.getChildren().add(canvas);
-
+		play = true;
+		score = 0;
+		lives = 3;
 		gc = canvas.getGraphicsContext2D();
 		ship = new Image("Spaceship.JPG");
 		ast  = new Image("Asteroid.JPG");
+		bul = new Image("Bullets.JPG");
 		background = new Image("background.jpg");
 
 		spaceship = new Spaceship(300, 200, ship);
+		bullets = new ArrayList<Bullets>();
+		rectBul = new ArrayList<Rectangle2D>();
+
 		asteroids = new ArrayList<Asteroids>();
-
-		respawnAsteroids(asteroids);
-
 		rectAst = new ArrayList<Rectangle2D>();
+
 		//pane = new StackPane();
 		scene = new Scene(root, Color.BLACK);
 
@@ -90,6 +105,12 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 
 		if(event instanceof KeyEvent){
 
+			if(lives == 0){
+				if(((KeyEvent)event).getCode() == KeyCode.R){
+					R = true;
+				}
+			}
+
 			if(((KeyEvent)event).getCode() == KeyCode.LEFT)
 				spaceship.setRotVel(-3.0);
 			if(((KeyEvent)event).getCode() == KeyCode.RIGHT)
@@ -107,6 +128,10 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 				spaceship.setPosVelX(3.0);
 
 			}
+			if(((KeyEvent)event).getCode() == KeyCode.SPACE){
+				shootBullet();
+			}
+
 			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.LEFT || ((KeyEvent)event).getCode() == KeyCode.RIGHT)){
 
 				spaceship.setRotVel(0);
@@ -131,58 +156,150 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 	public class AnimateObjects extends AnimationTimer{
 		public void handle(long now){
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-			gc.drawImage(background, 0, 0);
 
-			spaceship.getShip().setRotate(spaceship.getRotAng());
-			spaceship.getShip().setX(spaceship.getPosX());
-			spaceship.getShip().setY(spaceship.getPosY());
+			if(play){
 
-			//Rectangle2D rectShip = new Rectangle2D(spaceship.getPosX(), spaceship.getPosY(), ship.getWidth()+20, ship.getHeight()+20);
+				gc.drawImage(background, 0, 0);
+				if(lives == 3){
+					gc.drawImage(ship, 0, 0);
+					gc.drawImage(ship, 0, 30);
+					gc.drawImage(ship,0, 60);
+				}
+				else if(lives == 2){
+					gc.drawImage(ship, 0, 0);
+					gc.drawImage(ship, 0, 30);
+				}
+				else if(lives == 1){
+					gc.drawImage(ship, 0, 0);
+				}
 
-			int bye = -1;
-			for(Asteroids a: asteroids){
-				if((a.getPosY() < -10 || a.getPosY() > 400) || (a.getPosX() < 0 || a.getPosX() > 800)){
-					bye = asteroids.indexOf(a);
+				gc.setFill( Color.WHITE);
+				gc.setStroke( Color.WHITE );
+				gc.setLineWidth(3);
+				Font font = Font.font( "Arial", FontWeight.NORMAL, 20 );
+				gc.setFont( font );
+				gc.fillText( "Score: "+score, 650, 390 );
+
+
+				while(rectAst.size() != 0){
+					rectAst.remove(0);
+				}
+				while(rectBul.size() != 0){
+					rectBul.remove(0);
+				}
+
+				for(Asteroids a : asteroids){
+					rectAst.add(new Rectangle2D(a.getPosX(), a.getPosY(), ast.getWidth(), ast.getHeight()));
+				}
+				for(Bullets b : bullets){
+					rectBul.add(new Rectangle2D(b.getPosX(), b.getPosY(), bul.getWidth(), bul.getHeight()));
+				}
+
+				spaceship.getShip().setRotate(spaceship.getRotAng());
+				spaceship.getShip().setX(spaceship.getPosX());
+				spaceship.getShip().setY(spaceship.getPosY());
+
+				rectShip = new Rectangle2D(spaceship.getPosX(), spaceship.getPosY(), ship.getWidth(), ship.getHeight());
+
+				for(Bullets b : bullets){
+					b.getBullet().setX(b.getPosX());
+					b.getBullet().setY(b.getPosY());
+					b.update();
+				}
+
+				int bye = -1;
+				for(Asteroids a: asteroids){
+					if((a.getPosY() < -100 || a.getPosY() > 500) || (a.getPosX() < -100 || a.getPosX() > 900)){
+						bye = asteroids.indexOf(a);
+					}
+				}
+				if(bye != -1){
+					root.getChildren().remove(asteroids.get(bye).getAsteroid());
+					asteroids.remove(bye);
+
+				}
+
+				for(Asteroids a : asteroids){
+					a.getAsteroid().setX(a.getPosX());
+					a.getAsteroid().setY(a.getPosY());
+					a.update();
+				}
+				if(asteroids.size() < 6){
+					respawnAsteroids();
+				}
+
+
+				spaceship.update();
+				spaceship.updateRotate();
+
+				for(int i=rectBul.size()-1; i>=0; i--){
+					for(int j=0;j< rectAst.size();j++){
+						if(rectBul.get(i).intersects(rectAst.get(j))){
+							root.getChildren().remove(asteroids.get(j).getAsteroid());
+							asteroids.remove(j);
+
+							root.getChildren().remove(bullets.get(i).getBullet());
+							bullets.remove(i);
+							score+=10;
+
+						}
+					}
+				}
+
+				for(int i=0;i<rectAst.size();i++){
+					if(rectShip.intersects(rectAst.get(i))){
+						spaceship.setPosX(300);
+						spaceship.setPosY(200);
+						lives--;
+
+						root.getChildren().remove(asteroids.get(i).getAsteroid());
+						asteroids.remove(i);
+					}
+				}
+
+				if(lives == 0){
+					play = false;
 				}
 			}
-			if(bye != -1){
-				root.getChildren().remove(asteroids.get(bye).getAsteroid());
-				asteroids.remove(bye);
-			}
-
-			System.out.println(asteroids.size());
-			for(Asteroids a : asteroids){
-				a.getAsteroid().setX(a.getPosX());
-				a.getAsteroid().setY(a.getPosY());
-				a.update();
-			}
-			if(asteroids.size() < 4){
-				respawnAsteroids(asteroids);
-			}
-
-
-			spaceship.update();
-			spaceship.updateRotate();
-
-
-			/*for(Rectangle2D r : rectAst){
-				if(rectShip.intersects(r)){
-				//	gc.setFill( Color.YELLOW);
-					gc.setStroke( Color.RED );
-					gc.setLineWidth(3);
-					Font font = Font.font( "Arial", FontWeight.NORMAL, 48 );
-					gc.setFont( font );
-					gc.fillText( "Game Over", 100, 50 );
-					gc.strokeText( "Game Over", 100, 50 );
+			else{
+				for(int i=1; i < root.getChildren().size(); i++){
+					root.getChildren().remove(1);
 				}
-			}*/
+				for(int i=0;i<asteroids.size();i++){
+					asteroids.remove(0);
+				}
+				gc.drawImage(background, 0, 0);
 
+				gc.setFill( Color.RED);
+				gc.setStroke( Color.RED );
+				gc.setLineWidth(3);
+				Font font = Font.font( "Arial", FontWeight.NORMAL, 48 );
+				gc.setFont( font );
+				gc.fillText( "Game Over", 300, 50 );
+				gc.strokeText( "Game Over", 300, 50 );
+
+				gc.setFill(Color.YELLOW);
+				gc.fillText("Score: "+score, 320, 150);
+
+				gc.setFill(Color.RED);
+				gc.fillText("Press 'R' to restart", 225, 225);
+				if(R){
+					lives = 3;
+					score = 0;
+					R = false;
+					root.getChildren().add(spaceship.getShip());
+					play = true;
+				}
+
+			}
 
 		}
 	}
-	public void respawnAsteroids(ArrayList<Asteroids> asteroids){
 
-		while(asteroids.size() < 4){
+
+	public void respawnAsteroids(){
+
+		while(asteroids.size() < 6){
 			int randChoose = (int)(Math.random()*2)+1;
 			double randAstX = (int)(Math.random()*750);
 			double randAstY;
@@ -211,5 +328,15 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 
 		}
 	}
+	public void shootBullet(){
+
+		bullets.add(new Bullets(spaceship.getPosX()+10, spaceship.getPosY()+10, bul));
+		root.getChildren().add(bullets.get(bullets.size()-1).getBullet());
+		double rads = Math.toRadians(spaceship.getRotAng());
+		bullets.get(bullets.size()-1).setPosVelX(Math.cos(rads)*3.2);
+		bullets.get(bullets.size()-1).setPosVelY(Math.sin(rads)*3.2  );
+
+	}
+
 
 }
