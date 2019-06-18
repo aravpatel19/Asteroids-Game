@@ -26,7 +26,7 @@ import javafx.scene.shape.*;
 import javafx.animation.*;
 import javafx.util.Duration;
 
-public class AsteroidsGame extends Application implements EventHandler<InputEvent>{
+public class AravPatel extends Application implements EventHandler<InputEvent>{
 	GraphicsContext gc;
 	Image trooper;
 	int x = 0;
@@ -122,14 +122,20 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 				}
 			}
 
-			if(((KeyEvent)event).getCode() == KeyCode.LEFT)
-				spaceship.setRotVel(-3.0);
-			if(((KeyEvent)event).getCode() == KeyCode.RIGHT)
-				spaceship.setRotVel(3.0);
 			if(((KeyEvent)event).getCode() == KeyCode.W){
-				spaceship.setPosVelY(-3.0);
+				double rads = Math.toRadians(spaceship.getRotAng());
+
+				spaceship.setPosVelY(Math.sin(rads)*2.8);
+				spaceship.setPosVelX(Math.cos(rads)*2.8);
 			}
-			if(((KeyEvent)event).getCode() == KeyCode.S){
+			if(((KeyEvent)event).getCode() == KeyCode.A){
+				spaceship.setRotVel(-3.0);
+			}
+			if(((KeyEvent)event).getCode() == KeyCode.D){
+
+				spaceship.setRotVel(3.0);
+			}
+			/*if(((KeyEvent)event).getCode() == KeyCode.S){
 				spaceship.setPosVelY(3.0);
 			}
 			if(((KeyEvent)event).getCode() == KeyCode.A){
@@ -138,22 +144,19 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 			if(((KeyEvent)event).getCode() == KeyCode.D){
 				spaceship.setPosVelX(3.0);
 
-			}
+			}*/
+
 			if(((KeyEvent)event).getCode() == KeyCode.SPACE){
 				shootBullet();
 				shoot.play();
 			}
 
-			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.LEFT || ((KeyEvent)event).getCode() == KeyCode.RIGHT)){
+			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.A || ((KeyEvent)event).getCode() == KeyCode.D)){
 
 				spaceship.setRotVel(0);
 			}
-			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.W || ((KeyEvent)event).getCode() == KeyCode.S)){
+			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.W)){
 				spaceship.setPosVelY(0);
-			}
-
-			if(event.getEventType().toString().equals("KEY_RELEASED") && (((KeyEvent)event).getCode() == KeyCode.A || ((KeyEvent)event).getCode() == KeyCode.D)){
-
 				spaceship.setPosVelX(0);
 			}
 
@@ -353,8 +356,8 @@ public class AsteroidsGame extends Application implements EventHandler<InputEven
 		bullets.add(new Bullets(spaceship.getPosX()+10, spaceship.getPosY()+10, bul));
 		root.getChildren().add(bullets.get(bullets.size()-1).getBullet());
 		double rads = Math.toRadians(spaceship.getRotAng());
-		bullets.get(bullets.size()-1).setPosVelX(Math.cos(rads)*3.2);
-		bullets.get(bullets.size()-1).setPosVelY(Math.sin(rads)*3.2  );
+		bullets.get(bullets.size()-1).setPosVelX(Math.cos(rads)*3.5);
+		bullets.get(bullets.size()-1).setPosVelY(Math.sin(rads)*3.5  );
 
 	}
 
